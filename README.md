@@ -1,0 +1,1 @@
+# bad-automation-of-operations
