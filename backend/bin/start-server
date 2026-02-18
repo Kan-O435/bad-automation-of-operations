@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+set -e
+
+# Railsサーバーをポート3001で起動
+cd "$(dirname "$0")/.."
+PORT=3001 bin/rails server
