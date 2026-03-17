@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Input } from "../ui/Input";
 import { Button } from "../ui/Button";
 import { useRouter } from "next/navigation";
+import { API_URL } from "../../lib/api";
 
 export const LoginForm = () => {
   const [email, setEmail] = useState("");
@@ -16,7 +17,7 @@ export const LoginForm = () => {
     setErrors([]);
 
     try {
-      const res = await fetch("http://localhost:3001/login", {
+      const res = await fetch(`${API_URL}/login`, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json"
@@ -44,6 +45,8 @@ export const LoginForm = () => {
       }
 
       const data = await res.json();
+      // ログイン成功を通知
+      window.dispatchEvent(new Event("user-logged-in"));
       router.push("/tournament");
     } catch (error) {
       console.error("Login error:", error);

@@ -55,6 +55,8 @@ export const SignupForm = () => {
 
       const data = await res.json();
       alert("アカウントが作成されました！");
+      // ログイン成功を通知
+      window.dispatchEvent(new Event("user-logged-in"));
       router.push("/tournament");
     } catch (error) {
       console.error("Signup error:", error);
