@@ -1,8 +1,11 @@
 Rails.application.config.middleware.insert_before 0, Rack::Cors do
   allow do
-    # Next.jsアプリのオリジンを許可（開発環境）
-    origins Rails.env.development? ? ["http://localhost:3000", "http://localhost:3002", "http://127.0.0.1:3000", "http://127.0.0.1:3002"] : ENV.fetch("FRONTEND_URL", "http://localhost:3000")
-    
+    if Rails.env.development?
+      origins "http://localhost:3002", "http://127.0.0.1:3002"
+    else
+      origins ENV.fetch("FRONTEND_URL")
+    end
+
     resource "*",
       headers: :any,
       credentials: true,

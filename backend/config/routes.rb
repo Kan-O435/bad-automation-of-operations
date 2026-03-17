@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   delete "/logout", to: "sessions#destroy"
   post "/signup", to: "admins#create"
   get "/me", to: "sessions#me"
+  get "/sw.js", to: proc { [204, {}, []] }
 
   get "up" => "rails/health#show", as: :rails_health_check
 end
