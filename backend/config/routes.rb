@@ -1,14 +1,12 @@
 Rails.application.routes.draw do
-  get "admins/create"
-  get "sessions/create"
-  get "sessions/destroy"
-  get "up" => "rails/health#show", as: :rails_health_check
+  resources :tournaments
+  resources :tournament_days
 
   post "/login", to: "sessions#create"
   delete "/logout", to: "sessions#destroy"
-
   post "/signup", to: "admins#create"
-
   get "/me", to: "sessions#me"
+  get "/sw.js", to: proc { [204, {}, []] }
 
+  get "up" => "rails/health#show", as: :rails_health_check
 end

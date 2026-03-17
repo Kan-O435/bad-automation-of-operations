@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_01_28_045837) do
+ActiveRecord::Schema[8.1].define(version: 2026_02_21_020000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -21,4 +21,24 @@ ActiveRecord::Schema[8.1].define(version: 2026_01_28_045837) do
     t.string "password_digest"
     t.datetime "updated_at", null: false
   end
+
+  create_table "tournament_days", force: :cascade do |t|
+    t.datetime "created_at", null: false
+    t.date "day"
+    t.bigint "tournament_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tournament_id"], name: "index_tournament_days_on_tournament_id"
+  end
+
+  create_table "tournaments", force: :cascade do |t|
+    t.bigint "admin_id", null: false
+    t.datetime "created_at", null: false
+    t.text "detail"
+    t.string "title"
+    t.datetime "updated_at", null: false
+    t.index ["admin_id"], name: "index_tournaments_on_admin_id"
+  end
+
+  add_foreign_key "tournament_days", "tournaments"
+  add_foreign_key "tournaments", "admins"
 end
