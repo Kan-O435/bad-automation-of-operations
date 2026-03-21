@@ -3,8 +3,11 @@ class TournamentsController < ApplicationController
   before_action :set_tournament, only: [:show, :update, :destroy]
 
   def index
-    @tournaments = current_admin.tournaments.includes(:tournament_days)
-    render json: @tournaments.as_json(include: { tournament_days: { only: [:id, :day] } })
+    @tournaments = current_admin.tournaments.includes(:tournament_days, :tournament_categories)
+    render json: @tournaments.map { |t|
+      t.as_json(include: { tournament_days: { only: [:id, :day] } })
+       .merge(categories_count: t.tournament_categories.size)
+    }
   end
 
   def show
@@ -38,6 +41,8 @@ class TournamentsController < ApplicationController
 
   def set_tournament
     @tournament = current_admin.tournaments.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Tournament not found" }, status: :not_found
   end
 
   def tournament_params
