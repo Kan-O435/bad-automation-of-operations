@@ -1,6 +1,8 @@
 Rails.application.routes.draw do
-  resources :tournaments
-  resources :tournament_days
+  resources :tournaments do
+    resources :tournament_days, only: [:create, :destroy]
+    resources :tournament_categories, only: [:index, :create, :update]
+  end
 
   post "/login", to: "sessions#create"
   delete "/logout", to: "sessions#destroy"
