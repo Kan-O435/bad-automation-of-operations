@@ -21,8 +21,21 @@ export const TournamentCard = ({ tournament }: TournamentCardProps) => {
     new Date(a.day).getTime() - new Date(b.day).getTime()
   );
 
+  const hasCategories = (tournament.categories_count ?? 0) > 0;
+
+  const handleCategoryNavigation = () => {
+    if (hasCategories) {
+      router.push(`/tournament/${tournament.id}/categories/list`);
+    } else {
+      router.push(`/tournament/${tournament.id}/categories`);
+    }
+  };
+
   return (
-    <div className="bg-gray-50 p-6 border border-gray-100 rounded hover:shadow-md transition-shadow flex gap-6">
+    <div
+      onClick={handleCategoryNavigation}
+      className="bg-gray-50 p-6 border border-gray-100 rounded hover:shadow-md hover:border-gray-300 transition-all cursor-pointer flex gap-6"
+    >
       <div className="flex-1">
         <h2 className="text-xl font-bold mb-2 text-black">{tournament.title}</h2>
         <p className="text-gray-700 mb-4 whitespace-pre-wrap">{tournament.detail}</p>
@@ -38,8 +51,13 @@ export const TournamentCard = ({ tournament }: TournamentCardProps) => {
         ) : (
           <p className="text-sm text-gray-500">開催予定日: 未設定</p>
         )}
+        <p className="text-xs text-gray-400 mt-3">
+          {hasCategories
+            ? `カテゴリー ${tournament.categories_count}件`
+            : "カテゴリー未作成"}
+        </p>
       </div>
-      <div className="flex items-start">
+      <div className="flex items-start gap-2" onClick={(e) => e.stopPropagation()}>
         <button
           onClick={() => router.push(`/tournament/${tournament.id}/edit`)}
           className="bg-[#1a1a1a] text-white px-3 py-1 text-sm font-normal hover:opacity-90 transition-opacity rounded"

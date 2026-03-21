@@ -10,4 +10,5 @@ export type Tournament = {
   created_at: string;
   updated_at: string;
   tournament_days?: TournamentDay[];
+  categories_count?: number;
 };
