@@ -1,29 +1,13 @@
 class TournamentDaysController < ApplicationController
   before_action :authenticate_admin!
-  before_action :set_tournament_day, only: [:show, :update, :destroy]
-
-  def index
-    @tournament_days = TournamentDay.includes(:tournament).all
-    render json: @tournament_days
-  end
-
-  def show
-    render json: @tournament_day
-  end
+  before_action :set_tournament
+  before_action :set_tournament_day, only: [:destroy]
 
   def create
-    @tournament_day = TournamentDay.new(tournament_day_params)
+    @tournament_day = @tournament.tournament_days.build(tournament_day_params)
 
     if @tournament_day.save
       render json: @tournament_day, status: :created
-    else
-      render json: { errors: @tournament_day.errors.full_messages }, status: :unprocessable_entity
-    end
-  end
-
-  def update
-    if @tournament_day.update(tournament_day_params)
-      render json: @tournament_day
     else
       render json: { errors: @tournament_day.errors.full_messages }, status: :unprocessable_entity
     end
@@ -36,11 +20,19 @@ class TournamentDaysController < ApplicationController
 
   private
 
+  def set_tournament
+    @tournament = current_admin.tournaments.find(params[:tournament_id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Tournament not found" }, status: :not_found
+  end
+
   def set_tournament_day
-    @tournament_day = TournamentDay.find(params[:id])
+    @tournament_day = @tournament.tournament_days.find(params[:id])
+  rescue ActiveRecord::RecordNotFound
+    render json: { error: "Tournament day not found" }, status: :not_found
   end
 
   def tournament_day_params
-    params.require(:tournament_day).permit(:day, :tournament_id)
+    params.require(:tournament_day).permit(:day)
   end
 end

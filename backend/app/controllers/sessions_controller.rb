@@ -1,4 +1,6 @@
 class SessionsController < ApplicationController
+  before_action :authenticate_admin!, only: [:me]
+
   def create
     admin = Admin.find_by(email: params[:email])
 
@@ -16,7 +18,6 @@ class SessionsController < ApplicationController
   end
 
   def me
-    authenticate_admin!
     render json: { admin: { id: current_admin.id, email: current_admin.email, name: current_admin.name } }
   end
 end
