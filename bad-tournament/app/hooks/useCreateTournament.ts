@@ -58,7 +58,7 @@ export const useCreateTournament = () => {
       // TournamentDayを作成
       if (params.days.length > 0) {
         const dayPromises = params.days.map((day) =>
-          fetch(`${API_URL}/tournament_days`, {
+          fetch(`${API_URL}/tournaments/${tournamentData.id}/tournament_days`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -67,7 +67,6 @@ export const useCreateTournament = () => {
             body: JSON.stringify({
               tournament_day: {
                 day: day,
-                tournament_id: tournamentData.id,
               },
             }),
           })
@@ -82,7 +81,8 @@ export const useCreateTournament = () => {
         }
       }
 
-      router.push("/tournament");
+      // 大会作成後はカテゴリー設定画面へ
+      router.push(`/tournament/${tournamentData.id}/categories`);
     } catch (err) {
       setError(err instanceof Error ? err.message : "通信エラーが発生しました");
     } finally {

@@ -59,7 +59,7 @@ export const useUpdateTournament = () => {
       if (params.existingDayIds.length > 0) {
         await Promise.all(
           params.existingDayIds.map((dayId) =>
-            fetch(`${API_URL}/tournament_days/${dayId}`, {
+            fetch(`${API_URL}/tournaments/${params.id}/tournament_days/${dayId}`, {
               method: "DELETE",
               credentials: "include",
             })
@@ -70,7 +70,7 @@ export const useUpdateTournament = () => {
       // 新しいTournamentDayを作成
       if (params.days.length > 0) {
         const dayPromises = params.days.map((day) =>
-          fetch(`${API_URL}/tournament_days`, {
+          fetch(`${API_URL}/tournaments/${params.id}/tournament_days`, {
             method: "POST",
             headers: {
               "Content-Type": "application/json",
@@ -79,7 +79,6 @@ export const useUpdateTournament = () => {
             body: JSON.stringify({
               tournament_day: {
                 day: day,
-                tournament_id: params.id,
               },
             }),
           })
