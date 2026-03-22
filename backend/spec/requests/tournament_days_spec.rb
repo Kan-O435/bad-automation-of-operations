@@ -21,9 +21,9 @@ RSpec.describe "TournamentDays API", type: :request do
   end
 
   # -------------------------------------------------------
-  # POST /tournament_days
+  # POST /tournaments/:tournament_id/tournament_days
   # -------------------------------------------------------
-  describe "POST /tournament_days" do
+  describe "POST /tournaments/:tournament_id/tournament_days" do
     context "ログイン済みの場合" do
       before { create_and_login_admin }
 
@@ -32,9 +32,8 @@ RSpec.describe "TournamentDays API", type: :request do
           tournament_id = create_tournament
 
           expect {
-            post "/tournament_days", params: {
-              tournament_day: { day: "2026-05-01", tournament_id: tournament_id }
-            }
+            post "/tournaments/#{tournament_id}/tournament_days",
+                 params: { tournament_day: { day: "2026-05-01" } }
           }.to change(TournamentDay, :count).by(1)
 
           expect(response).to have_http_status(:created)
@@ -46,12 +45,10 @@ RSpec.describe "TournamentDays API", type: :request do
         it "同じトーナメントに複数日程を登録できる" do
           tournament_id = create_tournament
 
-          post "/tournament_days", params: {
-            tournament_day: { day: "2026-05-01", tournament_id: tournament_id }
-          }
-          post "/tournament_days", params: {
-            tournament_day: { day: "2026-05-02", tournament_id: tournament_id }
-          }
+          post "/tournaments/#{tournament_id}/tournament_days",
+               params: { tournament_day: { day: "2026-05-01" } }
+          post "/tournaments/#{tournament_id}/tournament_days",
+               params: { tournament_day: { day: "2026-05-02" } }
 
           expect(TournamentDay.where(tournament_id: tournament_id).count).to eq(2)
         end
@@ -62,9 +59,8 @@ RSpec.describe "TournamentDays API", type: :request do
           tournament_id = create_tournament
 
           expect {
-            post "/tournament_days", params: {
-              tournament_day: { day: nil, tournament_id: tournament_id }
-            }
+            post "/tournaments/#{tournament_id}/tournament_days",
+                 params: { tournament_day: { day: nil } }
           }.not_to change(TournamentDay, :count)
 
           expect(response).to have_http_status(:unprocessable_entity)
@@ -72,23 +68,21 @@ RSpec.describe "TournamentDays API", type: :request do
           expect(json["errors"]).to be_present
         end
 
-        it "tournament_idが存在しない場合、422 Unprocessable Entity が返る" do
+        it "存在しないtournament_idの場合、404 Not Found が返る" do
           expect {
-            post "/tournament_days", params: {
-              tournament_day: { day: "2026-05-01", tournament_id: 99999 }
-            }
+            post "/tournaments/99999/tournament_days",
+                 params: { tournament_day: { day: "2026-05-01" } }
           }.not_to change(TournamentDay, :count)
 
-          expect(response).to have_http_status(:unprocessable_entity)
+          expect(response).to have_http_status(:not_found)
         end
       end
     end
 
     context "未ログインの場合" do
       it "401 Unauthorized が返る" do
-        post "/tournament_days", params: {
-          tournament_day: { day: "2026-05-01", tournament_id: 1 }
-        }
+        post "/tournaments/1/tournament_days",
+             params: { tournament_day: { day: "2026-05-01" } }
         expect(response).to have_http_status(:unauthorized)
         json = JSON.parse(response.body)
         expect(json["error"]).to eq("unauthorized")
@@ -106,12 +100,10 @@ RSpec.describe "TournamentDays API", type: :request do
       it "トーナメントにtournament_daysが紐づいて取得できる" do
         tournament_id = create_tournament(title: "全国大会")
 
-        post "/tournament_days", params: {
-          tournament_day: { day: "2026-06-01", tournament_id: tournament_id }
-        }
-        post "/tournament_days", params: {
-          tournament_day: { day: "2026-06-02", tournament_id: tournament_id }
-        }
+        post "/tournaments/#{tournament_id}/tournament_days",
+             params: { tournament_day: { day: "2026-06-01" } }
+        post "/tournaments/#{tournament_id}/tournament_days",
+             params: { tournament_day: { day: "2026-06-02" } }
 
         get "/tournaments/#{tournament_id}"
         expect(response).to have_http_status(:ok)
@@ -145,18 +137,16 @@ RSpec.describe "TournamentDays API", type: :request do
       expect(tournament["tournament_days"]).to eq([])
 
       # 4. 1日目の日程を登録
-      post "/tournament_days", params: {
-        tournament_day: { day: "2026-08-10", tournament_id: tournament_id }
-      }
+      post "/tournaments/#{tournament_id}/tournament_days",
+           params: { tournament_day: { day: "2026-08-10" } }
       expect(response).to have_http_status(:created)
       day1 = JSON.parse(response.body)
       expect(day1["day"]).to eq("2026-08-10")
       expect(day1["tournament_id"]).to eq(tournament_id)
 
       # 5. 2日目の日程を登録
-      post "/tournament_days", params: {
-        tournament_day: { day: "2026-08-11", tournament_id: tournament_id }
-      }
+      post "/tournaments/#{tournament_id}/tournament_days",
+           params: { tournament_day: { day: "2026-08-11" } }
       expect(response).to have_http_status(:created)
       day2 = JSON.parse(response.body)
       expect(day2["day"]).to eq("2026-08-11")
