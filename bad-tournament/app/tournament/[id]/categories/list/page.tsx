@@ -163,6 +163,9 @@ export default function CategoryListPage() {
   const goToAdd = () =>
     router.push(`/tournament/${tournamentId}/categories`);
 
+  const goToParticipants = (_categoryId: number) =>
+    router.push(`/tournament/${tournamentId}/participants`);
+
   const filteredCategories =
     genderFilter === "all"
       ? categories
@@ -297,6 +300,7 @@ export default function CategoryListPage() {
                         key={category.id}
                         category={category}
                         onEdit={setEditingCategory}
+                        onRegisterParticipants={goToParticipants}
                       />
                     ))}
                   </div>
@@ -311,10 +315,12 @@ export default function CategoryListPage() {
                     + さらにカテゴリーを追加する
                   </button>
                   <button
-                    onClick={() => router.push("/tournament")}
+                    onClick={() =>
+                      router.push(`/tournament/${tournamentId}/participants`)
+                    }
                     className="bg-[#1a1a1a] text-white px-6 py-2.5 text-sm font-bold rounded hover:opacity-80 transition-opacity"
                   >
-                    大会一覧へ戻る
+                    参加者を登録する
                   </button>
                 </div>
               </div>
