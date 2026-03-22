@@ -1,6 +1,8 @@
 class Team < ApplicationRecord
   belongs_to :tournament_category
-  has_many :team_members, dependent: :destroy
+  has_many :team_members,       dependent: :destroy
+  has_many :league_group_entries, dependent: :destroy
+  has_many :league_groups, through: :league_group_entries
 
   validates :name, presence: true
   validates :seed_number,
