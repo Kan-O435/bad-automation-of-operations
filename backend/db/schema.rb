@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema[8.1].define(version: 2026_03_22_000000) do
+ActiveRecord::Schema[8.1].define(version: 2026_03_22_120000) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "pg_catalog.plpgsql"
 
@@ -20,6 +20,28 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_000000) do
     t.string "name"
     t.string "password_digest"
     t.datetime "updated_at", null: false
+  end
+
+  create_table "team_members", force: :cascade do |t|
+    t.string "affiliation"
+    t.integer "age"
+    t.datetime "created_at", null: false
+    t.integer "gender_type", null: false
+    t.string "name", null: false
+    t.bigint "team_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["team_id"], name: "index_team_members_on_team_id"
+    t.check_constraint "gender_type = ANY (ARRAY[0, 1])", name: "check_team_members_gender_type"
+  end
+
+  create_table "teams", force: :cascade do |t|
+    t.string "affiliation"
+    t.datetime "created_at", null: false
+    t.string "name", null: false
+    t.integer "seed_number"
+    t.bigint "tournament_category_id", null: false
+    t.datetime "updated_at", null: false
+    t.index ["tournament_category_id"], name: "index_teams_on_tournament_category_id"
   end
 
   create_table "tournament_categories", force: :cascade do |t|
@@ -56,6 +78,8 @@ ActiveRecord::Schema[8.1].define(version: 2026_03_22_000000) do
     t.index ["admin_id"], name: "index_tournaments_on_admin_id"
   end
 
+  add_foreign_key "team_members", "teams"
+  add_foreign_key "teams", "tournament_categories"
   add_foreign_key "tournament_categories", "tournaments"
   add_foreign_key "tournament_days", "tournaments"
   add_foreign_key "tournaments", "admins"

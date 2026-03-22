@@ -1,5 +1,6 @@
 class TournamentCategory < ApplicationRecord
   belongs_to :tournament
+  has_many :teams, dependent: :destroy
 
   enum :gender_type, { men: 0, women: 1, mixed: 2 }
 
