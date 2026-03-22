@@ -8,6 +8,7 @@ import {
 type Props = {
   category: TournamentCategory;
   onEdit?: (category: TournamentCategory) => void;
+  onRegisterParticipants?: (categoryId: number) => void;
 };
 
 type BadgeProps = {
@@ -35,7 +36,7 @@ const InfoRow = ({ label, value }: InfoRowProps) => (
   </div>
 );
 
-export const CategoryCard = ({ category, onEdit }: Props) => {
+export const CategoryCard = ({ category, onEdit, onRegisterParticipants }: Props) => {
   const isLeagueFormat =
     category.format_type === "league" ||
     category.format_type === "league_to_tournament";
@@ -45,16 +46,27 @@ export const CategoryCard = ({ category, onEdit }: Props) => {
 
   return (
     <div className="bg-white border border-gray-200 rounded p-5 space-y-3 relative">
-      {/* 編集ボタン */}
-      {onEdit && (
-        <button
-          type="button"
-          onClick={() => onEdit(category)}
-          className="absolute top-3 right-3 text-xs text-gray-400 hover:text-black border border-gray-200 hover:border-gray-400 px-2.5 py-1 rounded transition-colors"
-        >
-          編集
-        </button>
-      )}
+      {/* 右上ボタン群 */}
+      <div className="absolute top-3 right-3 flex items-center gap-1.5">
+        {onEdit && (
+          <button
+            type="button"
+            onClick={() => onEdit(category)}
+            className="text-xs text-gray-400 hover:text-black border border-gray-200 hover:border-gray-400 px-2.5 py-1 rounded transition-colors"
+          >
+            編集
+          </button>
+        )}
+        {onRegisterParticipants && (
+          <button
+            type="button"
+            onClick={() => onRegisterParticipants(category.id)}
+            className="text-xs text-white bg-black hover:opacity-75 px-2.5 py-1 rounded transition-opacity"
+          >
+            参加者登録
+          </button>
+        )}
+      </div>
 
       {/* バッジ行 */}
       <div className="flex flex-wrap gap-2 pr-14">
