@@ -765,12 +765,18 @@ export default function ClubParticipantsPage() {
         )}
 
         {/* フッター */}
-        <div className="mt-12 pt-6 border-t border-gray-100">
+        <div className="mt-12 pt-6 border-t border-gray-100 flex items-center justify-between">
           <button
             onClick={() => router.push(`/tournament/${tournamentId}/participants`)}
             className="text-sm text-black underline hover:opacity-70 transition-opacity"
           >
             ← 参加チーム一覧に戻る
+          </button>
+          <button
+            onClick={() => router.push(`/tournament/${tournamentId}/participants`)}
+            className="bg-black text-white px-6 py-2.5 text-sm font-bold rounded hover:opacity-80 transition-opacity"
+          >
+            このチームを登録 →
           </button>
         </div>
       </div>
