@@ -5,9 +5,20 @@ Rails.application.routes.draw do
     end
     resources :tournament_days, only: [:create, :destroy]
     resources :tournament_categories, only: [:index, :create, :update] do
+      member do
+        post :generate
+        get  :bracket
+      end
       resources :teams, only: [:index, :create, :update, :destroy] do
         resources :team_members, only: [:create, :update, :destroy]
       end
+    end
+  end
+
+  resources :matches, only: [:show] do
+    member do
+      patch :update_games
+      patch :withdraw
     end
   end
 
