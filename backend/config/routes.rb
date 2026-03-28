@@ -2,6 +2,7 @@ Rails.application.routes.draw do
   resources :tournaments do
     member do
       get :teams
+      post :import, to: "csv_imports#create"
     end
     resources :tournament_days, only: [:create, :destroy]
     resources :tournament_categories, only: [:index, :create, :update] do
